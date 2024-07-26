@@ -1,6 +1,7 @@
 const express = require('express');
 const connectDB = require('./db');
 const items = require('./routes/items');
+const auth = require('./routes/auth');
 require('dotenv').config();
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/items', items);
+app.use('/api/auth', auth);
 
 app.get('/api', (req, res) => {
   res.send({ message: 'Hello from the server!' });
