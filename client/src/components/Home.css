@@ -38,3 +38,67 @@
     color: #666;
   }
   
+  .item button {
+    margin: 5px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .item button:hover {
+    opacity: 0.8;
+  }
+  
+  .item button:nth-child(2) {
+    background-color: #f44336;
+    color: #fff;
+  }
+  
+  .item button:nth-child(1) {
+    background-color: #4caf50;
+    color: #fff;
+  }
+  
+
+
+/* Home.css
+
+.home {
+    text-align: center;
+    padding: 20px;
+    background-color: #262627;
+    min-height: 100vh;
+  }
+  
+  .item-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 20px;
+    width: 250px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+  }
+  
+  .item:hover {
+    transform: translateY(-5px);
+  }
+  
+  .item h3 {
+    margin-top: 0;
+    color: #333;
+  }
+  
+  .item p {
+    color: #666;
+  }
+   */
