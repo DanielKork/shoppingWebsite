@@ -5,6 +5,7 @@ import Register from './components/Register';
 import Users from './components/Users';
 import AddItem from './components/AddItem';
 import Home from './components/Home';
+import Cart from './components/Cart';
 import './App.css';
 
 function App() {
@@ -13,11 +14,12 @@ function App() {
       <div className="App">
         <header className="App-header">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Login />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/register" element={<Register />} />
             <Route path="/users" element={<Users />} />
             <Route path="/add-item" element={<AddItem />} />
+            <Route path="/cart" element={<Cart />} />
           </Routes>
         </header>
       </div>

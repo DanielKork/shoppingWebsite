@@ -5,6 +5,7 @@ const { check, validationResult } = require('express-validator');
 const User = require('../models/User');
 const router = express.Router();
 require('dotenv').config();
+const config = require('config');
 
 // @route   POST api/auth/register
 // @desc    Register user
@@ -51,7 +52,8 @@ router.post(
 
       jwt.sign(
         payload,
-        process.env.SECRET,
+        //process.env.SECRET,
+        config.get('jwtSecret'),
         { expiresIn: 360000 },
         (err, token) => {
           if (err) throw err;
@@ -103,7 +105,8 @@ router.post(
 
       jwt.sign(
         payload,
-        process.env.SECRET,
+        //process.env.SECRET,
+        config.get('jwtSecret'),
         { expiresIn: 360000 },
         (err, token) => {
           if (err) throw err;
