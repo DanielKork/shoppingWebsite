@@ -11,7 +11,7 @@ router.post('/cart', auth, async (req, res) => {
   const { itemId } = req.body;
 
   try {
-    console.log('Req.user in route:', req.user); // Add this line
+    //console.log('Req.user in route:', req.user);
     const user = await User.findById(req.user.id);
     const item = await Item.findById(itemId);
 
