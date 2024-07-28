@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './Home.css'; // Ensure this CSS file is imported
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import './Home.css';
 
 const Home = () => {
   const [items, setItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortAZ, setSortAZ] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -12,6 +17,7 @@ const Home = () => {
       try {
         const res = await axios.get('/api/items');
         setItems(res.data);
+        setFilteredItems(res.data);
       } catch (err) {
         console.error(err);
       }
@@ -38,19 +44,73 @@ const Home = () => {
     }
   };
 
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+    filterAndSortItems(e.target.value, sortAZ);
+  };
+
+  const handleSortChange = () => {
+    const newSortAZ = !sortAZ;
+    setSortAZ(newSortAZ);
+    filterAndSortItems(searchQuery, newSortAZ);
+  };
+
+  const filterAndSortItems = (search, sort) => {
+    let filtered = items;
+    if (search) {
+      filtered = filtered.filter(item =>
+        item.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    if (sort) {
+      filtered.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    setFilteredItems(filtered);
+  };
+
   return (
     <div className="home">
-      <h2>Items List</h2>
-      <button onClick={() => navigate('/cart')}>Go to Cart</button>
-      <div className="item-list">
-        {items.map((item) => (
-          <div key={item._id} className="item">
-            <h3>{item.name}</h3>
-            <p>{item.description}</p>
-            <button onClick={() => handleAddToCart(item._id)}>Add to Cart</button>
-            <button onClick={() => alert('Buying functionality not implemented yet')}>Buy</button>
+      <header className="home-header">
+        <h1>Our Store</h1>
+        <button className="cart-button" onClick={() => navigate('/cart')}>
+          <FontAwesomeIcon icon={faShoppingCart} /> Cart
+        </button>
+      </header>
+      <div className="home-content">
+        <aside className="filter-sidebar">
+          <h2>Filter and Sort</h2>
+          <div className="filter-item">
+            <input
+              type="checkbox"
+              id="sortAZ"
+              checked={sortAZ}
+              onChange={handleSortChange}
+            />
+            <label htmlFor="sortAZ">Sort A to Z</label>
           </div>
-        ))}
+        </aside>
+        <main className="item-section">
+          <input
+            type="text"
+            placeholder="Search items"
+            value={searchQuery}
+            onChange={handleSearch}
+            className="search-bar"
+          />
+          <div className="item-list">
+            {filteredItems.map((item) => (
+              <div key={item._id} className="item">
+                <img src={item.image} alt={item.name} className="item-image" />
+                <h3>{item.name}</h3>
+                <p>{item.description}</p>
+                <div className="item-actions">
+                  <button className="add-to-cart" onClick={() => handleAddToCart(item._id)}>Add to Cart</button>
+                  <button className="buy">Buy</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </main>
       </div>
     </div>
   );
@@ -60,15 +120,19 @@ export default Home;
 
 
 
+
+
+
 // import React, { useEffect, useState } from 'react';
 // import axios from 'axios';
-// import './Home.css'; // Ensure this CSS file is imported
+// import { useNavigate } from 'react-router-dom';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+// import './Home.css';
 
 // const Home = () => {
 //   const [items, setItems] = useState([]);
-//   const [editing, setEditing] = useState(null);
-//   const [name, setName] = useState('');
-//   const [description, setDescription] = useState('');
+//   const navigate = useNavigate();
 
 //   useEffect(() => {
 //     const fetchItems = async () => {
@@ -83,20 +147,19 @@ export default Home;
 //     fetchItems();
 //   }, []);
 
-//   const handleDelete = async (id) => {
+//   const handleAddToCart = async (itemId) => {
 //     try {
-//       await axios.delete(`/api/items/${id}`);
-//       setItems(items.filter((item) => item._id !== id));
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   };
-
-//   const handleUpdate = async (id) => {
-//     try {
-//       const res = await axios.put(`/api/items/${id}`, { name, description });
-//       setItems(items.map((item) => (item._id === id ? res.data : item)));
-//       setEditing(null);
+//       const token = localStorage.getItem('token');
+//       if (!token) {
+//         console.error('No token found');
+//         return;
+//       }
+//       await axios.post('/api/users/cart', { itemId }, {
+//         headers: {
+//           'x-auth-token': token
+//         }
+//       });
+//       alert('Item added to cart');
 //     } catch (err) {
 //       console.error(err);
 //     }
@@ -104,33 +167,22 @@ export default Home;
 
 //   return (
 //     <div className="home">
-//       <h2>Items List</h2>
+//       <header className="home-header">
+//         <h1>Our Store</h1>
+//         <button className="cart-button" onClick={() => navigate('/cart')}>
+//           <FontAwesomeIcon icon={faShoppingCart} /> Cart
+//         </button>
+//       </header>
 //       <div className="item-list">
 //         {items.map((item) => (
 //           <div key={item._id} className="item">
-//             {editing === item._id ? (
-//               <div>
-//                 <input
-//                   type="text"
-//                   value={name}
-//                   onChange={(e) => setName(e.target.value)}
-//                 />
-//                 <input
-//                   type="text"
-//                   value={description}
-//                   onChange={(e) => setDescription(e.target.value)}
-//                 />
-//                 <button onClick={() => handleUpdate(item._id)}>Save</button>
-//                 <button onClick={() => setEditing(null)}>Cancel</button>
-//               </div>
-//             ) : (
-//               <div>
-//                 <h3>{item.name}</h3>
-//                 <p>{item.description}</p>
-//                 <button onClick={() => { setEditing(item._id); setName(item.name); setDescription(item.description); }}>Edit</button>
-//                 <button onClick={() => handleDelete(item._id)}>Delete</button>
-//               </div>
-//             )}
+//             <img src={item.image} alt={item.name} className="item-image" />
+//             <h3>{item.name}</h3>
+//             <p>{item.description}</p>
+//             <div className="item-actions">
+//               <button className="add-to-cart" onClick={() => handleAddToCart(item._id)}>Add to Cart</button>
+//               <button className="buy">Buy</button>
+//             </div>
 //           </div>
 //         ))}
 //       </div>
