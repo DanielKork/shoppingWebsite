@@ -1,4 +1,4 @@
-/* Login.css */
+/* Register.css */
 
 /* Font-face */
 @font-face {
@@ -8,7 +8,7 @@
     font-style: normal;
   }
   
-  .login-body {
+  .register-body {
     font-family: 'CustomFont', Arial, sans-serif;
     background-color: #f0f2f5;
     display: flex;
@@ -18,12 +18,12 @@
     margin: 0;
   }
   
-  .login-container {
+  .register-container {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: 400px;
+    max-width: 800px;
     background-color: #ffffff;
     padding: 40px 30px;
     border-radius: 12px;
@@ -31,42 +31,42 @@
     transition: transform 0.3s ease-in-out;
   }
   
-  .login-container:hover {
+  .register-container:hover {
     transform: translateY(-5px);
   }
   
-  .login-box {
+  .register-box {
     width: 100%;
     text-align: center;
   }
   
-  .login-box h2 {
+  .register-box h2 {
     margin-bottom: 20px;
     color: #333;
     font-size: 1.8em;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
   }
   
-  .login-box form {
+  .register-box form {
     display: flex;
     flex-direction: column;
     align-items: stretch;
   }
   
-  .login-box label {
+  .register-box label {
     margin-bottom: 5px;
     font-weight: bold;
     color: #333;
     text-align: left;
   }
   
-  .login-box .form-group {
+  .register-box .form-group {
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
   }
   
-  .login-box input {
+  .register-box input {
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -74,12 +74,12 @@
     transition: border-color 0.3s ease-in-out;
   }
   
-  .login-box input:focus {
+  .register-box input:focus {
     border-color: #4caf50;
     outline: none;
   }
   
-  .login-box button {
+  .register-box button {
     padding: 15px;
     border: none;
     border-radius: 8px;
@@ -90,11 +90,11 @@
     transition: background-color 0.3s ease-in-out;
   }
   
-  .login-box button:hover {
+  .register-box button:hover {
     background-color: #45a049;
   }
   
-  .login-box p {
+  .register-box p {
     color: #f44336;
     margin-top: 20px;
     text-align: center;

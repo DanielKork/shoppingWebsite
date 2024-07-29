@@ -1,6 +1,5 @@
 /* AddItem.css */
 
-/* Font-face */
 @font-face {
     font-family: 'CustomFont';
     src: url('../../public/fonts/Roboto-Regular.woff2') format('woff2');
@@ -31,7 +30,7 @@ body {
   
   .add-item form {
     width: 100%;
-    max-width: 1200px; /* Match the width of the home page content */
+    max-width: 1200px;
     margin: 0 auto;
     background-color: #fff;
     padding: 30px;

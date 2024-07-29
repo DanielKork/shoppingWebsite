@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import './Home.css';
 
 const Home = () => {
@@ -10,6 +10,7 @@ const Home = () => {
   const [filteredItems, setFilteredItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortAZ, setSortAZ] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,7 +24,22 @@ const Home = () => {
       }
     };
 
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          const res = await axios.get('/api/auth', {
+            headers: { 'x-auth-token': token }
+          });
+          setUser(res.data);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
     fetchItems();
+    fetchUser();
   }, []);
 
   const handleAddToCart = async (itemId) => {
@@ -39,6 +55,19 @@ const Home = () => {
         }
       });
       alert('Item added to cart');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteItem = async (itemId) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`/api/items/${itemId}`, {
+        headers: { 'x-auth-token': token }
+      });
+      setItems(items.filter(item => item._id !== itemId));
+      setFilteredItems(filteredItems.filter(item => item._id !== itemId));
     } catch (err) {
       console.error(err);
     }
@@ -86,6 +115,11 @@ const Home = () => {
         <button className="home cart-button" onClick={() => navigate('/cart')}>
           <FontAwesomeIcon icon={faShoppingCart} /> Cart
         </button>
+        {user && user.role === 'admin' && (
+          <button className="home add-item-button" onClick={() => navigate('/add-item')}>
+            Add Item
+          </button>
+        )}
       </header>
       <div className="home-content">
         <aside className="home filter-sidebar">
@@ -117,7 +151,16 @@ const Home = () => {
                 <p className="home item-price">${(item.price || 0).toFixed(2)}</p>
                 <div className="home item-actions">
                   <button className="home add-to-cart" onClick={() => handleAddToCart(item._id)}>Add to Cart</button>
-                  <button className="home buy">Buy</button>
+                  {user && user.role === 'admin' && (
+                    <>
+                      <button className="home edit-item" onClick={() => navigate(`/edit/${item._id}`)}>
+                        <FontAwesomeIcon icon={faEdit} /> Edit
+                      </button>
+                      <button className="home delete-item" onClick={() => handleDeleteItem(item._id)}>
+                        <FontAwesomeIcon icon={faTrash} /> Delete
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             ))}
@@ -130,6 +173,7 @@ const Home = () => {
 };
 
 export default Home;
+
 
 
 
@@ -208,7 +252,7 @@ export default Home;
 //     if (filteredItems.length % 3 !== 0) {
 //       const count = 3 - (filteredItems.length % 3);
 //       for (let i = 0; i < count; i++) {
-//         placeholders.push(<div key={`placeholder-${i}`} className="item placeholder" />);
+//         placeholders.push(<div key={`placeholder-${i}`} className="home item placeholder" />);
 //       }
 //     }
 //     return placeholders;
@@ -218,14 +262,14 @@ export default Home;
 //     <div className="home">
 //       <header className="home-header">
 //         <h1>Our Store</h1>
-//         <button className="cart-button" onClick={() => navigate('/cart')}>
+//         <button className="home cart-button" onClick={() => navigate('/cart')}>
 //           <FontAwesomeIcon icon={faShoppingCart} /> Cart
 //         </button>
 //       </header>
 //       <div className="home-content">
-//         <aside className="filter-sidebar">
+//         <aside className="home filter-sidebar">
 //           <h2>Filter and Sort</h2>
-//           <div className="filter-item">
+//           <div className="home filter-item">
 //             <input
 //               type="checkbox"
 //               id="sortAZ"
@@ -241,18 +285,18 @@ export default Home;
 //             placeholder="Search items"
 //             value={searchQuery}
 //             onChange={handleSearch}
-//             className="search-bar"
+//             className="home search-bar"
 //           />
-//           <div className="item-list">
+//           <div className="home item-list">
 //             {filteredItems.map((item) => (
-//               <div key={item._id} className="item">
-//                 <img src={item.image} alt={item.name} className="item-image" />
+//               <div key={item._id} className="home item">
+//                 <img src={item.image} alt={item.name} className="home item-image" />
 //                 <h3>{item.name}</h3>
 //                 <p>{item.description}</p>
-//                 <p className="item-price">${(item.price || 0).toFixed(2)}</p>
-//                 <div className="item-actions">
-//                   <button className="add-to-cart" onClick={() => handleAddToCart(item._id)}>Add to Cart</button>
-//                   <button className="buy">Buy</button>
+//                 <p className="home item-price">${(item.price || 0).toFixed(2)}</p>
+//                 <div className="home item-actions">
+//                   <button className="home add-to-cart" onClick={() => handleAddToCart(item._id)}>Add to Cart</button>
+//                   <button className="home buy">Buy</button>
 //                 </div>
 //               </div>
 //             ))}
