@@ -68,18 +68,29 @@ const Home = () => {
     setFilteredItems(filtered);
   };
 
+  const getPlaceholderItems = () => {
+    const placeholders = [];
+    if (filteredItems.length % 3 !== 0) {
+      const count = 3 - (filteredItems.length % 3);
+      for (let i = 0; i < count; i++) {
+        placeholders.push(<div key={`placeholder-${i}`} className="home item placeholder" />);
+      }
+    }
+    return placeholders;
+  };
+
   return (
     <div className="home">
       <header className="home-header">
         <h1>Our Store</h1>
-        <button className="cart-button" onClick={() => navigate('/cart')}>
+        <button className="home cart-button" onClick={() => navigate('/cart')}>
           <FontAwesomeIcon icon={faShoppingCart} /> Cart
         </button>
       </header>
       <div className="home-content">
-        <aside className="filter-sidebar">
+        <aside className="home filter-sidebar">
           <h2>Filter and Sort</h2>
-          <div className="filter-item">
+          <div className="home filter-item">
             <input
               type="checkbox"
               id="sortAZ"
@@ -95,25 +106,22 @@ const Home = () => {
             placeholder="Search items"
             value={searchQuery}
             onChange={handleSearch}
-            className="search-bar"
+            className="home search-bar"
           />
-          <div className="item-list">
+          <div className="home item-list">
             {filteredItems.map((item) => (
-              <div key={item._id} className="item">
-                <img src={item.image} alt={item.name} className="item-image" />
+              <div key={item._id} className="home item">
+                <img src={item.image} alt={item.name} className="home item-image" />
                 <h3>{item.name}</h3>
                 <p>{item.description}</p>
-                <p className="item-price">${(item.price || 0).toFixed(2)}</p>
-                <div className="item-actions">
-                  <button className="add-to-cart" onClick={() => handleAddToCart(item._id)}>Add to Cart</button>
-                  <button className="buy">Buy</button>
+                <p className="home item-price">${(item.price || 0).toFixed(2)}</p>
+                <div className="home item-actions">
+                  <button className="home add-to-cart" onClick={() => handleAddToCart(item._id)}>Add to Cart</button>
+                  <button className="home buy">Buy</button>
                 </div>
               </div>
             ))}
-            {/* Add placeholders to maintain layout consistency */}
-            {Array.from({ length: (3 - (filteredItems.length % 3)) % 3 }).map((_, index) => (
-              <div key={index} className="item placeholder"></div>
-            ))}
+            {getPlaceholderItems()}
           </div>
         </main>
       </div>
@@ -122,7 +130,6 @@ const Home = () => {
 };
 
 export default Home;
-
 
 
 
@@ -196,6 +203,17 @@ export default Home;
 //     setFilteredItems(filtered);
 //   };
 
+//   const getPlaceholderItems = () => {
+//     const placeholders = [];
+//     if (filteredItems.length % 3 !== 0) {
+//       const count = 3 - (filteredItems.length % 3);
+//       for (let i = 0; i < count; i++) {
+//         placeholders.push(<div key={`placeholder-${i}`} className="item placeholder" />);
+//       }
+//     }
+//     return placeholders;
+//   };
+
 //   return (
 //     <div className="home">
 //       <header className="home-header">
@@ -231,12 +249,14 @@ export default Home;
 //                 <img src={item.image} alt={item.name} className="item-image" />
 //                 <h3>{item.name}</h3>
 //                 <p>{item.description}</p>
+//                 <p className="item-price">${(item.price || 0).toFixed(2)}</p>
 //                 <div className="item-actions">
 //                   <button className="add-to-cart" onClick={() => handleAddToCart(item._id)}>Add to Cart</button>
 //                   <button className="buy">Buy</button>
 //                 </div>
 //               </div>
 //             ))}
+//             {getPlaceholderItems()}
 //           </div>
 //         </main>
 //       </div>
@@ -245,4 +265,3 @@ export default Home;
 // };
 
 // export default Home;
-
