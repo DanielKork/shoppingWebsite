@@ -61,16 +61,15 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Update an item
-router.put('/:id', async (req, res) => {
-  const { name, description } = req.body;
-
+// @route   GET api/items/:id
+// @desc    Get item by ID
+// @access  Public
+router.get('/:id', async (req, res) => {
   try {
-    const item = await Item.findByIdAndUpdate(
-      req.params.id,
-      { name, description },
-      { new: true }
-    );
+    const item = await Item.findById(req.params.id);
+    if (!item) {
+      return res.status(404).json({ msg: 'Item not found' });
+    }
     res.json(item);
   } catch (err) {
     console.error(err.message);
@@ -78,10 +77,44 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Delete an item
-router.delete('/:id', async (req, res) => {
+// @route   PUT api/items/:id
+// @desc    Update an item
+// @access  Private (admin only)
+router.put('/:id', [auth, admin], async (req, res) => {
+  const { name, description, price, image } = req.body;
+
   try {
+    let item = await Item.findById(req.params.id);
+    if (!item) {
+      return res.status(404).json({ msg: 'Item not found' });
+    }
+
+    item = await Item.findByIdAndUpdate(
+      req.params.id,
+      { $set: { name, description, price, image } },
+      { new: true }
+    );
+
+    res.json(item);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+
+// @route   DELETE api/items/:id
+// @desc    Delete an item
+// @access  Private (admin only)
+router.delete('/:id', [auth, admin], async (req, res) => {
+  try {
+    const item = await Item.findById(req.params.id);
+    if (!item) {
+      return res.status(404).json({ msg: 'Item not found' });
+    }
+
     await Item.findByIdAndDelete(req.params.id);
+
     res.json({ msg: 'Item removed' });
   } catch (err) {
     console.error(err.message);

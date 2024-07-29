@@ -6,6 +6,7 @@ import Users from './components/Users';
 import AddItem from './components/AddItem';
 import Home from './components/Home';
 import Cart from './components/Cart';
+import EditItem from './components/EditItem';
 import './App.css';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
             <Route path="/users" element={<Users />} />
             <Route path="/add-item" element={<AddItem />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/edit/:id" element={<EditItem />} />
           </Routes>
         </header>
       </div>

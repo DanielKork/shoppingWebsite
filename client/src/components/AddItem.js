@@ -53,6 +53,7 @@ const AddItem = () => {
       setDescription('');
       setPrice('');
       setImage('');
+      navigate("/home");
     } catch (err) {
       console.error('Error adding item:', err);
     }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart, faEdit, faTrash, faSignOutAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 import './Home.css';
 
 const Home = () => {
@@ -29,7 +29,7 @@ const Home = () => {
         const token = localStorage.getItem('token');
         if (token) {
           const res = await axios.get('/api/auth', {
-            headers: { 'x-auth-token': token }
+            headers: { 'x-auth-token': token },
           });
           setUser(res.data);
         }
@@ -51,8 +51,8 @@ const Home = () => {
       }
       await axios.post('/api/users/cart', { itemId }, {
         headers: {
-          'x-auth-token': token
-        }
+          'x-auth-token': token,
+        },
       });
       alert('Item added to cart');
     } catch (err) {
@@ -64,10 +64,10 @@ const Home = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.delete(`/api/items/${itemId}`, {
-        headers: { 'x-auth-token': token }
+        headers: { 'x-auth-token': token },
       });
-      setItems(items.filter(item => item._id !== itemId));
-      setFilteredItems(filteredItems.filter(item => item._id !== itemId));
+      setItems(items.filter((item) => item._id !== itemId));
+      setFilteredItems(filteredItems.filter((item) => item._id !== itemId));
     } catch (err) {
       console.error(err);
     }
@@ -87,7 +87,7 @@ const Home = () => {
   const filterAndSortItems = (search, sort) => {
     let filtered = items;
     if (search) {
-      filtered = filtered.filter(item =>
+      filtered = filtered.filter((item) =>
         item.name.toLowerCase().includes(search.toLowerCase())
       );
     }
@@ -108,18 +108,28 @@ const Home = () => {
     return placeholders;
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
   return (
     <div className="home">
       <header className="home-header">
         <h1>Our Store</h1>
-        <button className="home cart-button" onClick={() => navigate('/cart')}>
-          <FontAwesomeIcon icon={faShoppingCart} /> Cart
-        </button>
-        {user && user.role === 'admin' && (
-          <button className="home add-item-button" onClick={() => navigate('/add-item')}>
-            Add Item
+        <div className="button-group">
+          <button className="home cart-button" onClick={() => navigate('/cart')}>
+            <FontAwesomeIcon icon={faShoppingCart} /> Cart
           </button>
-        )}
+          {user && user.role === 'admin' && (
+            <button className="home add-item-button" onClick={() => navigate('/add-item')}>
+              <FontAwesomeIcon icon={faPlus} /> Add Item
+            </button>
+          )}
+          <button className="home logout-button" onClick={handleLogout}>
+            <FontAwesomeIcon icon={faSignOutAlt} /> Logout
+          </button>
+        </div>
       </header>
       <div className="home-content">
         <aside className="home filter-sidebar">
@@ -150,7 +160,9 @@ const Home = () => {
                 <p>{item.description}</p>
                 <p className="home item-price">${(item.price || 0).toFixed(2)}</p>
                 <div className="home item-actions">
-                  <button className="home add-to-cart" onClick={() => handleAddToCart(item._id)}>Add to Cart</button>
+                  {user && user.role !== 'admin' && (
+                    <button className="home add-to-cart" onClick={() => handleAddToCart(item._id)}>Add to Cart</button>
+                  )}
                   {user && user.role === 'admin' && (
                     <>
                       <button className="home edit-item" onClick={() => navigate(`/edit/${item._id}`)}>
@@ -161,6 +173,7 @@ const Home = () => {
                       </button>
                     </>
                   )}
+                  <button className="home buy">Buy</button>
                 </div>
               </div>
             ))}
